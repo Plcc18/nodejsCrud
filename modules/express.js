@@ -5,6 +5,28 @@ const app = express();
 
 app.use(express.json());
 
+app.set('view engine', 'ejs');
+app.set('views', 'src/views')
+
+app.use((req, res, next) => {
+    console.log(`Request type: ${req.method}`);;
+    console.log(`Content type: ${req.headers["content-type"]}`);
+    console.log(`Date: ${new Date()}`);
+
+    next();
+});
+
+//Renderizar página index
+app.get('/views/users', async (req, res) => {
+
+    try {
+        const users = await UserModel.find({});
+        res.render('index', { users })
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+
 //Buscar todos os usuários
 app.get('/users', async (req, res) => {
     try {
